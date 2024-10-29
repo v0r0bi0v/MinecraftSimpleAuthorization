@@ -16,7 +16,10 @@ minecraft_server = MinecraftServer()
 
 # Команда /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    user_id = update.effective_chat.nickname
+    try:
+        user_id = update.effective_chat.username
+    except:
+        user_id = update.effective_chat.id
 
     if user_id in ALLOWED_USER_IDS:
         button = KeyboardButton("Register")
@@ -32,7 +35,10 @@ async def register(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 # Обработка введенного ника
 async def handle_nick(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    user_id = update.effective_chat.username
+    try:
+        user_id = update.effective_chat.username
+    except:
+        user_id = update.effective_chat.id
     nick = update.message.text
     user_nicks[user_id] = nick
 
@@ -42,7 +48,10 @@ async def handle_nick(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
 # Обработка нажатия кнопки Login
 async def login(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    user_id = update.effective_chat.username
+    try:
+        user_id = update.effective_chat.username
+    except:
+        user_id = update.effective_chat.id
 
     if user_id in user_nicks:
         await update.message.reply_text("У вас есть две минуты, чтобы войти на сервер.")
