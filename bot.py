@@ -24,7 +24,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         reply_markup = ReplyKeyboardMarkup([[button]], resize_keyboard=True)
         await update.message.reply_text("Choose a button:", reply_markup=reply_markup)
     else:
-        await update.message.reply_text("Message @v0r0bi0v to use the bot.")
+        await update.message.reply_text("To use the bot, send your username to @v0r0bi0v. " + 
+                                        "If your username is hidden, send your ID, which you can find in @userinfobot.")
 
 # Handling button press for Register
 async def register(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
