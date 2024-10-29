@@ -3,11 +3,10 @@ from telegram import Update, KeyboardButton, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 from minecraft import MinecraftServer
 from secret_token import TOKEN
-from config import TIME_LOGIN_AVAILABILITY
+from config import TIME_LOGIN_AVAILABILITY, ALLOWED_USER_IDS
 
 
 # Заранее заданный список id пользователей
-ALLOWED_USER_IDS = ["V0R0Bi0V", "MKuchum", "sogodz", "caracal_sparrow"]
 
 # Словарь для хранения никнеймов пользователей
 user_nicks = {}

@@ -6,7 +6,7 @@ import threading
 from config import TIME_LOGIN_AVAILABILITY
 
 class MinecraftServer:
-    def __init__(self, server_path="server.jar"):
+    def __init__(self, server_path="../server.jar"):
         # Запускаем сервер
         self.server_process = subprocess.Popen(
             ["java", "-jar", server_path, "nogui"],
