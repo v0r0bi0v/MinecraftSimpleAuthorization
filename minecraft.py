@@ -4,7 +4,7 @@ import threading
 
 class MinecraftServer:
     def __init__(self, server_path="../server.jar"):
-        # Запускаем сервер
+        # Start the server
         self.server_process = subprocess.Popen(
             ["java", "-jar", server_path, "nogui"],
             stdin=subprocess.PIPE,
@@ -13,53 +13,53 @@ class MinecraftServer:
             text=True
         )
         print("Minecraft server started.")
-        self.whitelist = set()  # Для хранения вайтлиста
-        threading.Thread(target=self._monitor_server_output, daemon=True).start()  # Запускаем поток для мониторинга логов
+        self.whitelist = set()  # For storing the whitelist
+        threading.Thread(target=self._monitor_server_output, daemon=True).start()  # Start a thread to monitor logs
 
     def add_to_whitelist(self, nickname):
-        """Добавляет игрока в собственный вайтлист и запускает таймер на удаление."""
+        """Adds a player to the custom whitelist and starts a timer for removal."""
         self.whitelist.add(nickname)
-        print(f"{nickname} добавлен в вайтлист.")
+        print(f"{nickname} added to the whitelist.")
 
-        # Запускаем таймер для удаления игрока через 2 минуты
+        # Start a timer to remove the player after 2 minutes
         threading.Timer(120, self._remove_from_whitelist, [nickname]).start()
 
     def _monitor_server_output(self):
-        """Поток для мониторинга вывода сервера и отслеживания логинов игроков."""
+        """Thread to monitor the server output and track player logins."""
         while True:
             output = self.server_process.stdout.readline()
             if not output:
                 break
-            self._(output.strip())
+            self._process_server_output(output.strip())
 
     def _process_server_output(self, output):
-        """Обрабатывает вывод сервера для отслеживания событий входа игроков."""
-        print(output)  # Печатаем вывод для отладки
+        """Processes the server output to track player login events."""
+        print(output)  # Print output for debugging
 
-        # Проверка на вход игрока
+        # Check for player login
         if "joined the game" in output:
-            # Извлекаем никнейм игрока
+            # Extract the player's nickname
             nickname = output.split(" ")[0]
             if nickname not in self.whitelist:
-                self._kick_player(nickname)  # Кикаем игрока, если его нет в вайтлисте
+                self._kick_player(nickname)  # Kick the player if they're not in the whitelist
 
     def _kick_player(self, nickname):
-        """Кикает игрока с сервера."""
-        self._send_command(f"kick {nickname} You are not whitelisted.")  # Отправляем команду кика игрока
+        """Kicks a player from the server."""
+        self._send_command(f"kick {nickname} You are not whitelisted.")  # Send a kick command to the player
 
     def _remove_from_whitelist(self, nickname):
-        """Удаляет игрока из вайтлиста."""
+        """Removes a player from the whitelist."""
         self.whitelist.discard(nickname)
-        print(f"{nickname} удален из вайтлиста.")
+        print(f"{nickname} removed from the whitelist.")
 
     def _send_command(self, command):
-        """Отправляет команду в консоль сервера."""
+        """Sends a command to the server console."""
         self.server_process.stdin.write(command + "\n")
         self.server_process.stdin.flush()
-        print(f"Команда '{command}' отправлена серверу.")
+        print(f"Command '{command}' sent to the server.")
 
     def _stop_server(self):
-        """Останавливает сервер корректно."""
+        """Stops the server gracefully."""
         self._send_command("stop")
         self.server_process.wait()
         print("Minecraft server stopped.")

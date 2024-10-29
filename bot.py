@@ -6,15 +6,13 @@ from secret_token import TOKEN
 from config import TIME_LOGIN_AVAILABILITY, ALLOWED_USER_IDS
 
 
-# Заранее заданный список id пользователей
-
-# Словарь для хранения никнеймов пользователей
+# Dictionary for storing registered users' nicknames
 user_nicks = {}
 
 minecraft_server = MinecraftServer()
 
 
-# Команда /start
+# Command /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     try:
         user_id = update.effective_chat.username
@@ -24,16 +22,16 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if user_id in ALLOWED_USER_IDS:
         button = KeyboardButton("Register")
         reply_markup = ReplyKeyboardMarkup([[button]], resize_keyboard=True)
-        await update.message.reply_text("Выберите кнопку:", reply_markup=reply_markup)
+        await update.message.reply_text("Choose a button:", reply_markup=reply_markup)
     else:
-        await update.message.reply_text("Напишите @v0r0bi0v, чтобы пользоваться ботом.")
+        await update.message.reply_text("Message @v0r0bi0v to use the bot.")
 
-# Обработка нажатия кнопки Register
+# Handling button press for Register
 async def register(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text("Введите ваш ник:")
+    await update.message.reply_text("Enter your nickname:")
     return "WAITING_FOR_NICK"
 
-# Обработка введенного ника
+# Handling the entered nickname
 async def handle_nick(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     try:
         user_id = update.effective_chat.username
@@ -44,9 +42,9 @@ async def handle_nick(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
     button = KeyboardButton("Login")
     reply_markup = ReplyKeyboardMarkup([[button]], resize_keyboard=True)
-    await update.message.reply_text("Ваш ник сохранен. Нажмите кнопку, чтобы войти:", reply_markup=reply_markup)
+    await update.message.reply_text("Your nickname has been saved. Press the button to log in:", reply_markup=reply_markup)
 
-# Обработка нажатия кнопки Login
+# Handling button press for Login
 async def login(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     try:
         user_id = update.effective_chat.username
@@ -54,28 +52,28 @@ async def login(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         user_id = update.effective_chat.id
 
     if user_id in user_nicks:
-        await update.message.reply_text("У вас есть две минуты, чтобы войти на сервер.")
+        await update.message.reply_text("You have two minutes to log in to the server.")
         minecraft_server.add_to_whitelist(user_nicks[user_id])
-        # Ждем 2 минуты без блокировки
+        # Wait for 2 minutes without blocking
         await asyncio.sleep(TIME_LOGIN_AVAILABILITY)
-        # После 2 минут снова показываем кнопку Login
+        # After 2 minutes, show the Login button again
         button = KeyboardButton("Login")
         reply_markup = ReplyKeyboardMarkup([[button]], resize_keyboard=True)
-        await update.message.reply_text("Время вышло. Нажмите кнопку, чтобы снова войти:", reply_markup=reply_markup)
+        await update.message.reply_text("Time is up. Press the button to log in again:", reply_markup=reply_markup)
     else:
-        await update.message.reply_text("Сначала зарегистрируйтесь!")
+        await update.message.reply_text("Please register first!")
 
 async def main() -> None:
-    # Создаем бота
+    # Create the bot
     app = ApplicationBuilder().token(TOKEN).build()
 
-    # Команды
+    # Commands
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.Regex('^Register$'), register))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_nick))
     app.add_handler(MessageHandler(filters.Regex('^Login$'), login))
 
-    # Запускаем бота
+    # Start the bot
     await app.run_polling()
 
 if __name__ == '__main__':
