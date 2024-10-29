@@ -3,6 +3,7 @@ import subprocess
 import time
 import os
 import threading
+from config import TIME_LOGIN_AVAILABILITY
 
 class MinecraftServer:
     def __init__(self, server_path="server.jar"):
@@ -36,7 +37,7 @@ class MinecraftServer:
             nickname = output.split(" ")[0]
             self.remove_from_whitelist(nickname)
 
-    def add_to_whitelist(self, nickname, duration=120):
+    def add_to_whitelist(self, nickname, duration=TIME_LOGIN_AVAILABILITY):
         """Добавляет игрока в whitelist на определенное время и затем проверяет, можно ли удалить его."""
         whitelist_path = "whitelist.json"
         

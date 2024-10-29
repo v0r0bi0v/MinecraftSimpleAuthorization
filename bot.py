@@ -1,16 +1,13 @@
-# import logging
 import asyncio
 from telegram import Update, KeyboardButton, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 from minecraft import MinecraftServer
 from secret_token import TOKEN
+from config import TIME_LOGIN_AVAILABILITY
 
-# Включаем логирование
-# logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
-# logger = logging.getLogger(__name__)
 
 # Заранее заданный список id пользователей
-ALLOWED_USER_IDS = [123456789, 987654321]  # todo
+ALLOWED_USER_IDS = ["V0R0Bi0V", "MKuchum", "sogodz", "caracal_sparrow"]
 
 # Словарь для хранения никнеймов пользователей
 user_nicks = {}
@@ -20,7 +17,7 @@ minecraft_server = MinecraftServer()
 
 # Команда /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    user_id = update.effective_chat.id
+    user_id = update.effective_chat.nickname
 
     if user_id in ALLOWED_USER_IDS:
         button = KeyboardButton("Register")
@@ -52,7 +49,7 @@ async def login(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await update.message.reply_text("У вас есть две минуты, чтобы войти на сервер.")
         minecraft_server.add_to_whitelist(user_nicks[user_id])
         # Ждем 2 минуты без блокировки
-        await asyncio.sleep(120)
+        await asyncio.sleep(TIME_LOGIN_AVAILABILITY)
         # После 2 минут снова показываем кнопку Login
         button = KeyboardButton("Login")
         reply_markup = ReplyKeyboardMarkup([[button]], resize_keyboard=True)
