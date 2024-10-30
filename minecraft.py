@@ -41,6 +41,9 @@ class MinecraftServer:
             nickname = output.split(" ")[0]
             if nickname not in self.whitelist:
                 self._kick_player(nickname)  # Kick the player if they're not in the whitelist
+            else:
+                self.whitelist.discard(nickname)
+                print(f"{nickname} removed from the whitelist, they logged in.")
 
     def _kick_player(self, nickname):
         """Kicks a player from the server."""
@@ -48,8 +51,9 @@ class MinecraftServer:
 
     def _remove_from_whitelist(self, nickname):
         """Removes a player from the whitelist."""
-        self.whitelist.discard(nickname)
-        print(f"{nickname} removed from the whitelist.")
+        if nickname in self.whitelist:
+            self.whitelist.discard(nickname)
+            print(f"{nickname} removed from the whitelist, time is up.")
 
     def _send_command(self, command):
         """Sends a command to the server console."""
