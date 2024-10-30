@@ -23,7 +23,7 @@ async def check_password(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     if entered_password == PASSWORD:
         button = KeyboardButton("Register")
         reply_markup = ReplyKeyboardMarkup([[button]], resize_keyboard=True)
-        await update.message.reply_text("Password correct. Choose a button:", reply_markup=reply_markup)
+        await update.message.reply_text("Password correct. Press the button to register:", reply_markup=reply_markup)
     else:
         await update.message.reply_text("Incorrect password. Please try again by sending /start.")
 
@@ -44,7 +44,7 @@ async def handle_nick(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
 # Handling button press for Login
 async def login(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text("You have two minutes to log in to the server.")
+    await update.message.reply_text("You have 2 minutes to log in to the server.")
     minecraft_server.add_to_whitelist(id_to_nickname[update.effective_chat.id])
     # Wait for 2 minutes without blocking
     await asyncio.sleep(TIME_LOGIN_AVAILABILITY)

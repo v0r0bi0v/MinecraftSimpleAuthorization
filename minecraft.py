@@ -2,7 +2,7 @@ import subprocess
 import threading
 
 class MinecraftServer:
-    def __init__(self, server_path="../server.jar"):
+    def __init__(self, server_path="server.jar"):
         # Start the server
         self.server_process = subprocess.Popen(
             ["java", "-jar", server_path, "nogui"],
